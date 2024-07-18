@@ -1,4 +1,4 @@
-// run "go mod init github.com/ndrean/apicall" to create a new module
+// run "go mod init server" to create a new module
 package server
 
 import (
@@ -43,17 +43,6 @@ func fetchTodos() ([]todo, error) {
 	return todos, nil
 }
 
-// you need to create a channel to cmunicate with goroutines
-func Run() {
-	// server is a handler, run in a goroutine
-	http.HandleFunc("/", server)
-	err := http.ListenAndServe(":8080", nil)
-	if err != nil {
-		fmt.Println("Error: ", err)
-		return
-	}
-}
-
 func server(res http.ResponseWriter, req *http.Request) {
 	defer req.Body.Close()
 	todos, err := fetchTodos()
@@ -66,4 +55,15 @@ func server(res http.ResponseWriter, req *http.Request) {
 	res.Write([]byte(fmt.Sprintf("Todos: %v", todos)))
 	// res.Header().Set("Content-Type", "application/json")
 
+}
+
+// you need to create a channel to cmunicate with goroutines
+func Run() {
+	// server is a handler, run in a goroutine
+	http.HandleFunc("/", server)
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		fmt.Println("Error: ", err)
+		return
+	}
 }

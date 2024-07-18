@@ -1,4 +1,4 @@
-// run "go mod init github.com/ndrean/apicall" to create a new module
+// run "go mod init api" to create a new module
 package api
 
 import (
@@ -67,26 +67,4 @@ func Run() {
 	case err := <-errCh:
 		fmt.Println("Error: ", err)
 	}
-
-	// server is a handler, run in a goroutine
-	http.HandleFunc("/", server)
-	err := http.ListenAndServe(":8080", nil)
-	if err != nil {
-		fmt.Println("Error: ", err)
-		return
-	}
-}
-
-func server(res http.ResponseWriter, req *http.Request) {
-	defer req.Body.Close()
-	todos, err := fetchTodos()
-	if err != nil {
-		res.WriteHeader(http.StatusInternalServerError)
-		http.Error(res, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	// write the response
-	res.Write([]byte(fmt.Sprintf("Todos: %v", todos)))
-	// res.Header().Set("Content-Type", "application/json")
-
 }
